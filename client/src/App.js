@@ -1,6 +1,7 @@
 import React from 'react';
-import Quotes from './components/quotes/quotes';
-
+import Quotes from './components/quotes/Quotes';
+import QuoteForm from './components/quotes/QuotesForm';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import './App.css';
 
 class App extends React.Component{
@@ -14,23 +15,33 @@ class App extends React.Component{
     }
   }
 
-  async componentDidMount(){
+   componentDidMount(){
+     this.getQuotes();
+  }
+  
+ getQuotes=()=>{
     try {
-      const response = await fetch('http://localhost:8080/quotes')
+       fetch('http://localhost:8080/quotes')
       .then(res => res.json())
-      this.setState({quotes:response})
+      .then(res => this.setState({quotes:res.quotes}))
 
     } catch(error){
       console.log(error)
     }
   }
+
   
   render(){
 
     return (
       <div className="App">
         <h1>Insubuy Code Challenges</h1>
-        <Quotes quotes={this.state.quotes} />
+        <Switch>
+          <Route exact path='/' render={()=>
+            <Quotes quotes={this.state.quotes} />
+          } />
+          <Route exact path='/quoteform' component={QuoteForm}  />
+        </Switch>
       </div>
     );
   }
